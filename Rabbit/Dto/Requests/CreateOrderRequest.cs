@@ -5,8 +5,8 @@ namespace Rabbit.Dto.Requests;
 public class CreateOrderRequest
 {
     [Required]
-    public decimal ProductPrice { get; set; }
+    public string ProductName { get; set; }
     
     [Required]
-    public string ProductName { get; set; }
+    public decimal ProductPrice { get; set; }
 }
