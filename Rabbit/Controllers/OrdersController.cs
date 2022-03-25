@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
 
@@ -18,10 +19,12 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task Create([FromBody] CreateOrderRequest createOrderRequest)
+    public Order Create([FromBody] CreateOrderRequest createOrderRequest)
     {
-        await _orderService.CreateOrder(createOrderRequest);
+        var order = _orderService.CreateOrder(createOrderRequest);
         
-        _rabbitMqService.SendEvent(createOrderRequest);
+        _rabbitMqService.SendEvent(order);
+
+        return order;
     }
 }

@@ -1,3 +1,4 @@
+using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
 
@@ -12,12 +13,18 @@ public class OrderService : IOrderService
         _logger = logger;
     }
 
-    public Task CreateOrder(CreateOrderRequest createOrderRequest)
+    public Order CreateOrder(CreateOrderRequest createOrderRequest)
     {
-        _logger.LogInformation($"New order request for: {createOrderRequest.ProductName} with ID {createOrderRequest.ProductId}");
+        _logger.LogInformation($"New order request for: {createOrderRequest.ProductName} which costs ${createOrderRequest.ProductPrice}");
 
         // Do some actually work writing to the database etc...
-        
-        return Task.CompletedTask;
+
+        return new Order
+        {
+            Id = Guid.NewGuid(),
+            ProductName = createOrderRequest.ProductName,
+            ProductPrice = createOrderRequest.ProductPrice,
+            CreatedAt = DateTime.Now
+        };
     }
 }

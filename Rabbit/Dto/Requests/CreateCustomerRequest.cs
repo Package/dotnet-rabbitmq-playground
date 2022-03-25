@@ -11,5 +11,6 @@ public class CreateCustomerRequest
     public string LastName { get; set; }
     
     [Required]
+    [EmailAddress]
     public string EmailAddress { get; set; }
 }

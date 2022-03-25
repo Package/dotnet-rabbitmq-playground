@@ -1,8 +1,9 @@
+using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 
 namespace Rabbit.Services.Interfaces;
 
 public interface ICustomerService
 {
-    Task SignUpCustomer(CreateCustomerRequest createCustomerRequest);
+    Customer SignUpCustomer(CreateCustomerRequest createCustomerRequest);
 }

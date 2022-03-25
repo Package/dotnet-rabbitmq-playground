@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
 
@@ -18,10 +19,12 @@ public class CustomersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task SignUp([FromBody] CreateCustomerRequest createCustomerRequest)
+    public Customer SignUp([FromBody] CreateCustomerRequest createCustomerRequest)
     {
-        await _customerService.SignUpCustomer(createCustomerRequest);
+        var customer = _customerService.SignUpCustomer(createCustomerRequest);
 
         _rabbitMqService.SendEvent(createCustomerRequest);
+
+        return customer;
     }
 }

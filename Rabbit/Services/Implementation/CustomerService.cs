@@ -1,3 +1,4 @@
+using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
 
@@ -12,12 +13,19 @@ public class CustomerService : ICustomerService
         _logger = logger;
     }
 
-    public Task SignUpCustomer(CreateCustomerRequest createCustomerRequest)
+    public Customer SignUpCustomer(CreateCustomerRequest createCustomerRequest)
     {
         _logger.LogInformation($"Creating a customer called: {createCustomerRequest.FirstName} {createCustomerRequest.LastName}");
         
         // Do some actual work, writing to the database etc.
         
-        return Task.CompletedTask;
+        return new Customer
+        {
+            Id = Guid.NewGuid(),
+            FirstName = createCustomerRequest.FirstName,
+            LastName = createCustomerRequest.LastName,
+            EmailAddress = createCustomerRequest.EmailAddress,
+            CreatedAt = DateTime.Now
+        };
     }
 }
