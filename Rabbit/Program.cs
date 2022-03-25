@@ -1,4 +1,4 @@
-using Rabbit.Configuration;
+using Rabbit.Domain.Configuration;
 using Rabbit.Services.Implementation;
 using Rabbit.Services.Interfaces;
 
@@ -10,6 +10,7 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 builder.Services.AddOptions();
+var options = builder.Configuration.GetSection("RabbitMq");
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
 
 builder.Services.AddControllers();

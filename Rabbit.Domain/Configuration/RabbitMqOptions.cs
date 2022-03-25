@@ -1,4 +1,4 @@
-namespace Rabbit.Configuration;
+namespace Rabbit.Domain.Configuration;
 
 public class RabbitMqOptions
 {

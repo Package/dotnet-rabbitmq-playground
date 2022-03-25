@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit", "Rabbit\Rabbit.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit.Domain", "Rabbit.Domain\Rabbit.Domain.csproj", "{F2163E45-698B-4E42-A37A-915A8685A876}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit.Consumer", "Rabbit.Consumer\Rabbit.Consumer.csproj", "{A6B1B895-6A49-45C3-8AE4-DEB32376922E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F2163E45-698B-4E42-A37A-915A8685A876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2163E45-698B-4E42-A37A-915A8685A876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2163E45-698B-4E42-A37A-915A8685A876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B1B895-6A49-45C3-8AE4-DEB32376922E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B1B895-6A49-45C3-8AE4-DEB32376922E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B1B895-6A49-45C3-8AE4-DEB32376922E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B1B895-6A49-45C3-8AE4-DEB32376922E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using Rabbit.Configuration;
+using Rabbit.Domain.Configuration;
 using Rabbit.Services.Interfaces;
 using RabbitMQ.Client;
 
