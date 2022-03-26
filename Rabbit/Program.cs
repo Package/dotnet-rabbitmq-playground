@@ -11,7 +11,7 @@ builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 builder.Services.AddOptions();
 var options = builder.Configuration.GetSection("RabbitMq");
-builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+builder.Services.Configure<RabbitOptions>(builder.Configuration.GetSection("RabbitMq"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

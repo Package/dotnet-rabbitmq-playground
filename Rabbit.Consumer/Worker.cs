@@ -1,6 +1,8 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Rabbit.Domain.Configuration;
+using Rabbit.Domain.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -9,11 +11,13 @@ namespace Rabbit.Consumer;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IOptions<RabbitMqOptions> _options;
+    private readonly IOptions<RabbitOptions> _options;
     private IConnection? _connection;
-    private IModel? _channel;
+    
+    private IModel? _ordersChannel;
+    private IModel? _customersChannel;
 
-    public Worker(ILogger<Worker> logger, IOptions<RabbitMqOptions> options)
+    public Worker(ILogger<Worker> logger, IOptions<RabbitOptions> options)
     {
         _logger = logger;
         _options = options;
@@ -32,8 +36,12 @@ public class Worker : BackgroundService
 
         _connection = factory.CreateConnection();
         
-        _channel = _connection.CreateModel();
-        _channel.QueueDeclare(queue: _options.Value.QueueName, durable: false, exclusive: false, autoDelete: false,
+        _customersChannel = _connection.CreateModel();
+        _customersChannel.QueueDeclare(queue: RabbitQueues.Customers, durable: false, exclusive: false, autoDelete: false,
+            arguments: null);
+
+        _ordersChannel = _connection.CreateModel();
+        _ordersChannel.QueueDeclare(RabbitQueues.Orders, durable: false, exclusive: false, autoDelete: false,
             arguments: null);
     }
 
@@ -41,23 +49,39 @@ public class Worker : BackgroundService
     {
         stoppingToken.ThrowIfCancellationRequested();
 
-        var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += MessageReceived;
+        var customerConsumer = new EventingBasicConsumer(_customersChannel);
+        customerConsumer.Received += CustomerMessageReceived;
+        _customersChannel.BasicConsume(queue: RabbitQueues.Customers, autoAck: false, consumer: customerConsumer);
 
-        _channel.BasicConsume(queue:_options.Value.QueueName, autoAck: false, consumer: consumer);
+        var orderConsumer = new EventingBasicConsumer(_ordersChannel);
+        orderConsumer.Received += OrderMessageReceived;
+        _ordersChannel.BasicConsume(queue: RabbitQueues.Orders, autoAck: false, consumer: orderConsumer);
         
         return Task.CompletedTask;
     }
 
-    private void MessageReceived(object? sender, BasicDeliverEventArgs e)
+    private void CustomerMessageReceived(object? sender, BasicDeliverEventArgs e)
     {
-        var content = Encoding.UTF8.GetString(e.Body.ToArray());
+        var customer = DeserializeMessage<Customer>(e.Body.ToArray());
         
-        // Parse the content
-        // Do something with it!
+        _logger.LogInformation($"(Consumer) Received customer called: {customer.FirstName} {customer.LastName}");
         
-        _logger.LogInformation($"Consumer: received a message with ID: {e.DeliveryTag}");
+        _customersChannel!.BasicAck(deliveryTag: e.DeliveryTag, multiple: false);
+    }
+
+    private void OrderMessageReceived(object? sender, BasicDeliverEventArgs e)
+    {
+        var order = DeserializeMessage<Order>(e.Body.ToArray());
         
-        _channel!.BasicAck(deliveryTag: e.DeliveryTag, multiple: false);
+        _logger.LogInformation($"(Consumer) Received order for: {order.ProductName} at price: {order.ProductPrice}");
+        
+        _ordersChannel!.BasicAck(deliveryTag: e.DeliveryTag, multiple: false);
+    }
+
+    private T DeserializeMessage<T>(byte[] bytes)
+    {
+        var asString = Encoding.UTF8.GetString(bytes);
+        
+        return JsonSerializer.Deserialize<T>(asString)!;
     }
 }

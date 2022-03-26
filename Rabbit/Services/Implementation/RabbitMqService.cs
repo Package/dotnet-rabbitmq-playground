@@ -10,10 +10,10 @@ namespace Rabbit.Services.Implementation;
 public class RabbitMqService : IRabbitMqService
 {
     private IConnection? _connection;
-    private readonly RabbitMqOptions _options;
+    private readonly RabbitOptions _options;
     private readonly ILogger<IRabbitMqService> _logger;
 
-    public RabbitMqService(IOptions<RabbitMqOptions> options, ILogger<IRabbitMqService> logger)
+    public RabbitMqService(IOptions<RabbitOptions> options, ILogger<IRabbitMqService> logger)
     {
         _logger = logger;
         _options = options.Value;
@@ -37,17 +37,17 @@ public class RabbitMqService : IRabbitMqService
         return _connection;
     }
     
-    public void SendEvent<T>(T obj)
+    public void SendEvent<T>(T obj, string queueName)
     {
         using var channel = GetConnection()!.CreateModel();
-        channel.QueueDeclare(queue: _options.QueueName, durable: false, exclusive: false, autoDelete: false,
+        channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false,
             arguments: null);
 
         var json = JsonSerializer.Serialize(obj);
         var body = Encoding.UTF8.GetBytes(json);
-        
-        channel.BasicPublish(exchange: string.Empty, routingKey: _options.QueueName, basicProperties: null, body: body);
 
-        _logger.LogInformation($"Successfully wrote Event to RabbitMq");
+        channel.BasicPublish(exchange: string.Empty, routingKey: queueName, basicProperties: null, body: body);
+
+        _logger.LogInformation($"Successfully wrote event to Queue ({queueName})");
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Rabbit.Domain.Configuration;
 using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
@@ -23,7 +24,7 @@ public class OrdersController : ControllerBase
     {
         var order = _orderService.CreateOrder(createOrderRequest);
         
-        _rabbitMqService.SendEvent(order);
+        _rabbitMqService.SendEvent(order, RabbitQueues.Orders);
 
         return order;
     }

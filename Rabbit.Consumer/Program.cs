@@ -7,7 +7,7 @@ builder.ConfigureServices((hostContext, services) =>
     services.AddHostedService<Worker>();
     services.AddOptions();
 
-    services.Configure<RabbitMqOptions>(hostContext.Configuration.GetSection("RabbitMq"));
+    services.Configure<RabbitOptions>(hostContext.Configuration.GetSection("RabbitMq"));
 });
 
 IHost host = builder.Build();

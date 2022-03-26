@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Rabbit.Domain.Configuration;
 using Rabbit.Domain.Models;
 using Rabbit.Dto.Requests;
 using Rabbit.Services.Interfaces;
@@ -23,7 +24,7 @@ public class CustomersController : ControllerBase
     {
         var customer = _customerService.SignUpCustomer(createCustomerRequest);
 
-        _rabbitMqService.SendEvent(createCustomerRequest);
+        _rabbitMqService.SendEvent(customer, RabbitQueues.Customers);
 
         return customer;
     }
