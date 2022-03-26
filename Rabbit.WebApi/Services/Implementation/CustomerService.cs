@@ -17,8 +17,6 @@ public class CustomerService : ICustomerService
     {
         _logger.LogInformation($"Creating a customer called: {createCustomerRequest.FirstName} {createCustomerRequest.LastName}");
         
-        // Do some actual work, writing to the database etc.
-        
         return new Customer
         {
             Id = Guid.NewGuid(),

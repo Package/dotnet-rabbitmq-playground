@@ -17,8 +17,6 @@ public class OrderService : IOrderService
     {
         _logger.LogInformation($"New order request for: {createOrderRequest.ProductName} which costs ${createOrderRequest.ProductPrice}");
 
-        // Do some actually work writing to the database etc...
-
         return new Order
         {
             Id = Guid.NewGuid(),
